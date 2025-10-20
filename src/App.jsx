@@ -6,7 +6,7 @@ import FinalizarPedidoSeccion2 from './pages/FinalizarPedidoSeccion2';
 import FinalizarPedido from './pages/FinalizarPedido';
 import Products from './pages/Products';
 import Index from './pages/Index';
-import Registro from './pages/Registro';
+import Registro from './pages/components/Registro';
 import Login from './pages/Login';
 import FinalizarPedidoSeccion1 from './pages/FinalizarPedidoSeccion1';
 
