@@ -1,0 +1,21 @@
+name: Despliegue Automático
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-vercel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy a Vercel (build en Vercel)
+        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
