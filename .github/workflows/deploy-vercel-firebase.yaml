@@ -3,78 +3,51 @@ name: Despliegue Automático
 on:
   push:
     branches:
-      - main # O la rama principal que usen
+      - main
 
 jobs:
-  # 1. Tarea de Construcción (Build)
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20' # Ajustar a la versión del proyecto
+          node-version: 20
+
       - name: Instalar dependencias
         run: npm install
-      - name: Construir la aplicación
-        run: npm run build # Comando de build del proyecto
 
-      # Para compartir el artefacto de build con los despliegues
-      - name: Subir artefacto de build
+      - name: Construir Vite
+        run: npm run build
+
+      - name: Subir artefacto Vite
         uses: actions/upload-artifact@v4
         with:
           name: build-output
-          path: .
-          #  |
-          #   ./build
-          #   ./firebase.json
+          path: |
+            dist
+            firebase.json
 
-
-  ## 2. Tarea de Despliegue en Vercel (Usando Vercel CLI)
   deploy-vercel:
-    needs: build 
+    needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout del código
-        uses: actions/checkout@v4
-        
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20' # Asegurar que Node esté disponible
-          
-      - name: Descargar artefacto de build
+          node-version: 20
+
+      - name: Descargar artefacto
         uses: actions/download-artifact@v4
         with:
           name: build-output
           path: .
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
-      - name: Pull Vercel Environment Information
+      - name: Instalar Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Pull Vercel
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
-      # - name: Build Project Artifacts
-      #   run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-      
-      - name: Deploy Project Artifacts to Vercel
+      - name: Deploy a Vercel sin build (prebuilt)
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-      
-
-  ## 3. Tarea de Despliegue en Firebase (Usando la Acción de Firebase Extended)
- 
