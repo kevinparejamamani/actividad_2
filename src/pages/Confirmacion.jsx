@@ -12,7 +12,7 @@ export default function OrderConfirmation() {
   }, []);
 
   const formatCardNumber = (cardNumber) => {
-    if (!cardNumber) return 'No dispodnible';
+    if (!cardNumber) return 'No disponible';
     return `**** **** **** ${cardNumber.slice(-4)}`;
   };
 
