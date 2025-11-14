@@ -3,7 +3,7 @@ name: Despliegue Automático
 on:
   push:
     branches:
-      - master # O la rama principal que usen
+      - main # O la rama principal que usen
 
 jobs:
   # 1. Tarea de Construcción (Build)
