@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function Index() {
   const html = `<header>
-    <h1>Bienvenido a Proyecto Sego</h1>
+    <h1>Bienvenido a Proyecto Sego2</h1>
     <nav>
       <a href="pages/products.html">Productos</a>
       <a href="pages/cart.html">Carrito</a>
