@@ -74,28 +74,4 @@ jobs:
       
 
   ## 3. Tarea de Despliegue en Firebase (Usando la Acción de Firebase Extended)
-  deploy-firebase:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout del código
-        uses: actions/checkout@v4
-        
-      - name: Descargar artefacto de build
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          # Descarga el artefacto en la raíz del workspace
-          path: .
-
-      - name: Desplegar en Firebase Hosting
-        # Usamos la acción oficial y mantenida por Firebase Extended
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          # Firebase Hosting prefiere una cuenta de servicio (Service Account) para CI/CD
-          # Si deseas usar el antiguo FIREBASE_TOKEN, podrías necesitar otra acción
-          # Pero la acción oficial usa la Cuenta de Servicio.
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
-          projectId: jeanpaulct-edicion3-frontend
-          channelId: live
+ 
