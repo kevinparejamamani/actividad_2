@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function Index() {
   const html = `<header>
-    <h1>Bienvenido a Proyecto Sego CON VERCEL</h1>
+    <h1>Bienvenido a Proyecto Sego</h1>
     <nav>
       <a href="products.html">Productos</a>
       <a href="cart.html">Carrito</a>
