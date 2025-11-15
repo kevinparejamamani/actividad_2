@@ -1,68 +1,40 @@
-import React, { useEffect } from 'react';
-import product1 from '../assets/product1.jpg';
-import product2 from '../assets/product2.jpg';
-import product3 from '../assets/product3.jpg';
+import React, { useEffect, useState } from 'react';
 
 export default function Products() {
-  const products = [
-    {
-      id: 1,
-      name: "Camara Bullet Exterior 1080P IR 40m 2.8-12mm",
-      price: "S/.40.00",
-      image: product1
-    },
-    {
-      id: 2,
-      name: "Ax Home Kit Alarma Wifi 16 Zonas. Inc(Panel, Pir, Magn y Pulsador)",
-      price: "S/.150.00",
-      image: product2
-    },
-    {
-      id: 3,
-      name: "Cerradura Inteligente con lector de Huella",
-      price: "S/.50.00",
-      image: product3
-    }
-  ];
 
+  const [products, setProducts] = useState([]);
+
+  // Consumir API
   useEffect(() => {
-    const handleAddToCart = (product) => {
-      let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-      carrito.push(product);
-      localStorage.setItem("carrito", JSON.stringify(carrito));
-      
-      const irCarrito = window.confirm(
-        `${product.nombre} añadido al carrito ✅\n\n¿Quieres ir al carrito ahora?`
-      );
-
-      if (irCarrito) {
-        window.location.href = "/cart";
-      } else {
-        console.log("El usuario sigue comprando...");
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("https://kevinparejamamani.lat/api/v2/productos");
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error al obtener productos:", error);
       }
     };
 
-    // Agregar event listeners a los botones
-    const botones = document.querySelectorAll(".product-card button");
-    botones.forEach((boton, index) => {
-      boton.addEventListener("click", () => {
-        const product = products[index];
-        const productData = {
-          nombre: product.name,
-          precio: parseFloat(product.price.replace("S/.", "")),
-          img: product.image
-        };
-        handleAddToCart(productData);
-      });
-    });
+    fetchProducts();
+  }, []);
 
-    // Cleanup: remover event listeners
-    return () => {
-      botones.forEach(boton => {
-        boton.removeEventListener("click", () => {});
-      });
-    };
-  }, [products]);
+  
+  // Función para añadir al carrito
+  const handleAddToCart = (product) => {
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    carrito.push(product);
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+
+    const irCarrito = window.confirm(
+      `${product.nombre} añadido al carrito ✅\n\n¿Quieres ir al carrito ahora?`
+    );
+
+    if (irCarrito) {
+      window.location.href = "/cart";
+    }
+  };
+
 
   return (
     <>
@@ -73,22 +45,32 @@ export default function Products() {
           <a href="/login">Iniciar Sesión</a>
         </nav>
       </header>
+
       <main className="container">
         <div className="products-grid">
+
+          {products.length === 0 && <p>Cargando productos...</p>}
+
           {products.map(product => (
             <div key={product.id} className="product-card">
-              <img src={product.image} alt={product.name} />
-              <h3>{product.name}</h3>
-              <p>{product.price}</p>
-              <button>Añadir al carrito</button>
+              <img src={product.imagen} alt={product.nombre} />
+              <h3>{product.nombre}</h3>
+              <p>S/. {product.precio}</p>
+
+              <button onClick={() => handleAddToCart(product)}>
+                Añadir al carrito
+              </button>
+
             </div>
           ))}
         </div>
       </main>
+
       <footer>
         <p>&copy; 2025 Sego. Todos los derechos reservados.</p>
         <address>
-          Contacto: <a href="mailto:ventas@sego.com">ventas@sego.com</a> • +51 999 999 999
+          Contacto:
+          <a href="mailto:ventas@sego.com">ventas@sego.com</a> • +51 999 999 999
         </address>
       </footer>
     </>
